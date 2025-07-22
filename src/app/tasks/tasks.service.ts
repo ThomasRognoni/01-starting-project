@@ -3,7 +3,7 @@ import { type Task } from './task/task.model';
 
 @Injectable({ providedIn: 'root' })
 export class TasksService {
-  private tasks = [
+  private defaultTasks = [
     {
       id: 't1',
       userId: 'u1',
@@ -28,10 +28,15 @@ export class TasksService {
     },
   ];
 
+  private tasks = [...this.defaultTasks];
+
   constructor() {
     const tasks = localStorage.getItem('tasks');
     if (tasks) {
       this.tasks = JSON.parse(tasks);
+    } else {
+      this.tasks = [...this.defaultTasks];
+      this.saveTasks();
     }
   }
 
@@ -41,13 +46,14 @@ export class TasksService {
 
   addTask(taskData: Task, userId: string) {
     this.tasks = [
-      ...this.tasks, // ... spread operator to copy existing tasks
+      ...this.tasks,
       {
         ...taskData,
         id: 't' + (Math.random() * 100000).toFixed(0),
         userId: userId,
       },
     ];
+    this.saveTasks(); // <-- Add this line to persist tasks after adding
   }
 
   removeTask(id: string) {

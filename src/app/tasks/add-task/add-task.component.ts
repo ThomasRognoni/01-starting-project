@@ -35,6 +35,7 @@ export class AddTaskComponent {
         },
         this.userId
       );
+      this.add.emit(); // <-- Emit the add event here
       this.cancel.emit();
     }
   }
